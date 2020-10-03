@@ -1,77 +1,28 @@
+<main>
+
 <article>
 
-    <h1>Native Looking matplotlib Plots in LaTeX</h1>
+# Native Looking matplotlib Plots in LaTeX
 
-    
-        <aside>
-    <ul>
-        <li>
-            <time class="post-date" datetime="2014-04-15T00:00:00Z">Apr 15, 2014</time>
-        </li>
-        
-        
+<aside>
 
-        
-        <li>
-            <em>
-                
-                    
-                    <a href="http://bkanuka.com/tags/latex/">#latex</a>
-                
-                    , 
-                    <a href="http://bkanuka.com/tags/matplotlib/">#matplotlib</a>
-                
-                    , 
-                    <a href="http://bkanuka.com/tags/latex/">#latex</a>
-                
-                    , 
-                    <a href="http://bkanuka.com/tags/tricks/">#tricks</a>
-                
-                    , 
-                    <a href="http://bkanuka.com/tags/script/">#script</a>
-                
-            </em>
-        </li>
-        
+*   <time class="post-date" datetime="2014-04-15T00:00:00Z">Apr 15, 2014</time>
+*   _[#latex](http://bkanuka.com/tags/latex/) , [#matplotlib](http://bkanuka.com/tags/matplotlib/) , [#latex](http://bkanuka.com/tags/latex/) , [#tricks](http://bkanuka.com/tags/tricks/) , [#script](http://bkanuka.com/tags/script/)_
+*   2 min read
 
-        <li>2 min read</li>
-    </ul>
 </aside>
-    
 
-    
+I write most of my math/numerical analysis scripts in Python, and I tend to use [matplotlib](http://matplotlib.org/) for plotting. When including a matplotlib plot in LaTeX I got the highest quality results by saving the plot as a PDF and using `\includegraphics{plot.pdf}` in LaTeX. However, it bothered me that the plot had different fonts and font sizes than the rest of the document. Here’s how I fixed that.
 
-<p>I write most of my math/numerical analysis scripts in Python, and I tend to use <a href="http://matplotlib.org/">matplotlib</a> for plotting.
-When including a matplotlib plot in LaTeX I got the highest quality results by saving the plot as a PDF and using <code>\includegraphics{plot.pdf}</code> in LaTeX.
-However, it bothered me that the plot had different fonts and font sizes than the rest of the document.
-Here’s how I fixed that.</p>
+## Figure Width
 
-<h2 id="figure-width">Figure Width</h2>
+I always choose the size of my plots as a percentage of the text width. For example `width=0.6\textwidth`. This allows me to use `0.3\textwidth` for images that are going to be side-by-side and not worry about absolute sizes. We want matplotlib to output the right size plot so we need to find what exactly the `textwidth` is and tell matplotlib. Do this by writing `\the\textwidth` inside your LaTeX document (inside the document, _not_ the preamble) and running it through `pdflatex` or whatever LaTeX engine you use. You’ll find that LaTeX will replace the command with some number. Record this number.
 
-<p>I always choose the size of my plots as a percentage of the text width.
-For example <code>width=0.6\textwidth</code>.
-This allows me to use <code>0.3\textwidth</code> for images that are going to be side-by-side and not worry about absolute sizes.
-We want matplotlib to output the right size plot so we need to find what exactly the <code>textwidth</code> is and tell matplotlib.
-Do this by writing <code>\the\textwidth</code> inside your LaTeX document (inside the document, <em>not</em> the preamble) and running it through <code>pdflatex</code> or whatever LaTeX engine you use.
-You’ll find that LaTeX will replace the command with some number.
-Record this number.</p>
+## Generate Figures
 
-<h2 id="generate-figures">Generate Figures</h2>
+For every LaTeX document that has plots, I write a script `figures.py` which creates all the plots. Copy the following script into `figures.py` and save it into the same folder as your LaTeX document. Replace `fig_width_pt` with whatever number you got from above.
 
-<p>For every LaTeX document that has plots, I write a script <code>figures.py</code> which creates all the plots.
-Copy the following script into <code>figures.py</code> and save it into the same folder as your LaTeX document.
-Replace <code>fig_width_pt</code> with whatever number you got from above.</p>
-
-<script src="//gist.github.com/bkanuka/10796230.js"></script><link rel="stylesheet" href="https://github.githubassets.com/assets/gist-embed-fd43f22140a6ad2cc9d0aa1f169a01f3.css"><div id="gist10796230" class="gist">
-    <div class="gist-file">
-      <div class="gist-data">
-        <div class="js-gist-file-update-container js-task-list-container file-box">
-  <div id="file-figures-template-py" class="file my-2">
-    
-
-  <div itemprop="text" class="Box-body p-0 blob-wrapper data type-python  ">
-      
-<code>
+```python
 import numpy as np
 import matplotlib as mpl
 mpl.use('pgf')
@@ -138,54 +89,48 @@ ax.set_xlabel('X Label')
 ax.set_ylabel('EMA')
 
 savefig('ema')
-</code>
+```
 
+You _must_ `import matplotlib` and make any rc changes before importing `matplotlib.pyplot`. matplotlib expresses sizes in inches, while LaTeX likes sizes to be in pt, so the first part of this script sets up sizes in matplotlib properly. The figure height is determined by the golden ratio, which is highly aesthetic ratio (it’s a good default).
 
-  </div>
+## LaTeX
 
-  </div>
+Running the above with `python figures.py` produces two files: `ema.pdf` and `ema.pgf`. The PDF file is used just to have a stand-alone version of the plot and make sure everything looks right.
+
+To incorporate the plot into LaTeX, put `\usepackage{pgf}` in the preamble and insert using `\input{ema.pgf}`. For example:
+
+<div class="highlight">
+
+    \documentclass{article}
+    \usepackage{pgf}
+
+    \begin{document}
+
+    \begin{figure}
+        \caption{A simple EMA plot.\label{fig:ema1}}
+        \centering
+        \input{ema.pgf}
+    \end{figure}
+
+    \end{document}
+
 </div>
 
-      </div>
-      <div class="gist-meta">
-        <a href="https://gist.github.com/bkanuka/10796230/raw/24b594c22f8bbe4c0a11a8384e50a4bbe08e31c4/figures-template.py" style="float:right">view raw</a>
-        <a href="https://gist.github.com/bkanuka/10796230#file-figures-template-py">figures-template.py</a>
-        hosted with ❤ by <a href="https://github.com">GitHub</a>
-      </div>
-    </div>
-</div>
+![ema plot example](http://bkanuka.com/images/ema.png)
 
+* * *
 
-<p>You <em>must</em> <code>import matplotlib</code> and make any rc changes before importing <code>matplotlib.pyplot</code>.
-matplotlib expresses sizes in inches, while LaTeX likes sizes to be in pt, so the first part of this script sets up sizes in matplotlib properly.
-The figure height is determined by the golden ratio, which is highly aesthetic ratio (it’s a good default).</p>
-
-<h2 id="latex">LaTeX</h2>
-
-<p>Running the above with <code>python figures.py</code> produces two files: <code>ema.pdf</code> and <code>ema.pgf</code>.
-The PDF file is used just to have a stand-alone version of the plot and make sure everything looks right.</p>
-
-<p>To incorporate the plot into LaTeX, put <code>\usepackage{pgf}</code> in the preamble and insert using <code>\input{ema.pgf}</code>.
-For example:</p>
-
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-latex" data-lang="latex"><span style="color:#66d9ef">\documentclass</span>{article}
-<span style="color:#66d9ef">\usepackage</span>{pgf}
-
-<span style="color:#66d9ef">\begin</span>{document}
-
-<span style="color:#66d9ef">\begin</span>{figure}
-    <span style="color:#66d9ef">\caption</span>{A simple EMA plot.<span style="color:#66d9ef">\label</span>{fig:ema1}}
-    <span style="color:#66d9ef">\centering</span>
-    <span style="color:#66d9ef">\input</span>{ema.pgf}
-<span style="color:#66d9ef">\end</span>{figure}
-
-<span style="color:#66d9ef">\end</span>{document}</code></pre></div>
-
-<p><img src="http://bkanuka.com/images/ema.png" alt="ema plot example"></p>
-
-<hr>
-
-<p><em>Thank you Dan for the suggested changes to my script</em></p>
-
+_Thank you Dan for the suggested changes to my script_
 
 </article>
+
+<section class="post-nav">
+
+*   [Random Selection with Average](http://bkanuka.com/posts/random-selecting-with-average/)
+*   [Convert Mathematica Equation to Python](http://bkanuka.com/posts/mathematica-to-python/)
+
+</section>
+
+<section class="comments-block"><button id="show-comments" style="">Add/View Comments</button></section>
+
+<script>(function () { if (window.location.hostname == "localhost") return; var disqus_loaded = false; var disqus_shortname = 'bkanuka'; var disqus_button = document.getElementById("show-comments"); disqus_button.style.display = ""; disqus_button.addEventListener("click", disqus, false); function disqus() { if (!disqus_loaded) { disqus_loaded = true; var e = document.createElement("script"); e.type = "text/javascript"; e.async = true; e.src = "//" + disqus_shortname + ".disqus.com/embed.js"; (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]) .appendChild(e); document.getElementById("show-comments").style.display = "none"; } } var hash = window.location.hash.substr(1); if (hash.length > 8) { if (hash.substring(0, 8) == "comment-") { disqus(); } } if (/bot|google|baidu|bing|msn|duckduckgo|slurp|yandex/i.test(navigator.userAgent)) { disqus(); } })();</script></main>
