@@ -1,5 +1,3 @@
-<main>
-
 <article>
 
 # Native Looking matplotlib Plots in LaTeX
@@ -122,15 +120,7 @@ To incorporate the plot into LaTeX, put `\usepackage{pgf}` in the preamble and i
 
 _Thank you Dan for the suggested changes to my script_
 
+original article: http://bkanuka.com/posts/native-latex-plots/
+
 </article>
 
-<section class="post-nav">
-
-*   [Random Selection with Average](http://bkanuka.com/posts/random-selecting-with-average/)
-*   [Convert Mathematica Equation to Python](http://bkanuka.com/posts/mathematica-to-python/)
-
-</section>
-
-<section class="comments-block"><button id="show-comments" style="">Add/View Comments</button></section>
-
-<script>(function () { if (window.location.hostname == "localhost") return; var disqus_loaded = false; var disqus_shortname = 'bkanuka'; var disqus_button = document.getElementById("show-comments"); disqus_button.style.display = ""; disqus_button.addEventListener("click", disqus, false); function disqus() { if (!disqus_loaded) { disqus_loaded = true; var e = document.createElement("script"); e.type = "text/javascript"; e.async = true; e.src = "//" + disqus_shortname + ".disqus.com/embed.js"; (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]) .appendChild(e); document.getElementById("show-comments").style.display = "none"; } } var hash = window.location.hash.substr(1); if (hash.length > 8) { if (hash.substring(0, 8) == "comment-") { disqus(); } } if (/bot|google|baidu|bing|msn|duckduckgo|slurp|yandex/i.test(navigator.userAgent)) { disqus(); } })();</script></main>
